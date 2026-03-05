@@ -39,10 +39,7 @@ function colorize(text: string, color: string): string {
   return `${colors[color]}${text}${colors.reset}`;
 }
 
-function getAllKeyPaths(
-  obj: TranslationData,
-  prefix: string[] = [],
-): string[][] {
+function getAllKeyPaths(obj: TranslationData, prefix: string[] = []): string[][] {
   let paths: string[][] = [];
   for (const key in obj) {
     if (!Object.hasOwn(obj, key)) continue;
@@ -51,9 +48,7 @@ function getAllKeyPaths(
     const value = obj[key];
 
     if (typeof value === "object" && value !== null && !Array.isArray(value)) {
-      paths = paths.concat(
-        getAllKeyPaths(value as TranslationData, currentPath),
-      );
+      paths = paths.concat(getAllKeyPaths(value as TranslationData, currentPath));
     } else {
       paths.push(currentPath);
     }
@@ -64,11 +59,7 @@ function getAllKeyPaths(
 function hasKeyPath(obj: TranslationData, keyPath: string[]): boolean {
   let current: unknown = obj;
   for (const key of keyPath) {
-    if (
-      typeof current !== "object" ||
-      current === null ||
-      (current as Record<string, unknown>)[key] === undefined
-    ) {
+    if (typeof current !== "object" || current === null || (current as Record<string, unknown>)[key] === undefined) {
       return false;
     }
     current = (current as Record<string, unknown>)[key];
@@ -97,9 +88,7 @@ function validateTranslations(): void {
   const referenceData = loadTranslationFile(REFERENCE_LANG);
 
   if (!referenceData) {
-    console.error(
-      colorize(`\n✗ Failed to load reference file (${REFERENCE_LANG})`, "red"),
-    );
+    console.error(colorize(`\n✗ Failed to load reference file (${REFERENCE_LANG})`, "red"));
     process.exit(1);
   }
 
@@ -122,15 +111,11 @@ function validateTranslations(): void {
     }
 
     // Find missing keys
-    const missing = referenceKeyPaths.filter(
-      (keyPath) => !hasKeyPath(langData, keyPath),
-    );
+    const missing = referenceKeyPaths.filter((keyPath) => !hasKeyPath(langData, keyPath));
 
     // Find extra keys (keys in language but not in reference)
     const langKeyPaths = getAllKeyPaths(langData);
-    const extra = langKeyPaths.filter(
-      (keyPath) => !hasKeyPath(referenceData, keyPath),
-    );
+    const extra = langKeyPaths.filter((keyPath) => !hasKeyPath(referenceData, keyPath));
 
     results[lang] = {
       valid: missing.length === 0 && extra.length === 0,
@@ -151,43 +136,27 @@ function validateTranslations(): void {
     const result = results[lang];
 
     if (result.valid) {
-      console.log(
-        colorize(`✓ ${lang.toUpperCase()}: All keys present`, "green"),
-      );
+      console.log(colorize(`✓ ${lang.toUpperCase()}: All keys present`, "green"));
     } else {
       console.log(colorize(`✗ ${lang.toUpperCase()}: Issues found`, "red"));
 
       if (result.missing.length > 0) {
-        console.log(
-          colorize(`  Missing ${result.missing.length} keys:`, "yellow"),
-        );
+        console.log(colorize(`  Missing ${result.missing.length} keys:`, "yellow"));
         result.missing.slice(0, 10).forEach((keyPath) => {
           console.log(`    - ${keyPath.join(".")}`);
         });
         if (result.missing.length > 10) {
-          console.log(
-            colorize(
-              `    ... and ${result.missing.length - 10} more`,
-              "yellow",
-            ),
-          );
+          console.log(colorize(`    ... and ${result.missing.length - 10} more`, "yellow"));
         }
       }
 
       if (result.extra.length > 0) {
-        console.log(
-          colorize(
-            `  Extra ${result.extra.length} keys (not in reference):`,
-            "yellow",
-          ),
-        );
+        console.log(colorize(`  Extra ${result.extra.length} keys (not in reference):`, "yellow"));
         result.extra.slice(0, 10).forEach((keyPath) => {
           console.log(`    - ${keyPath.join(".")}`);
         });
         if (result.extra.length > 10) {
-          console.log(
-            colorize(`    ... and ${result.extra.length - 10} more`, "yellow"),
-          );
+          console.log(colorize(`    ... and ${result.extra.length - 10} more`, "yellow"));
         }
       }
 
@@ -202,20 +171,10 @@ function validateTranslations(): void {
   const totalCount = LANGUAGES.length;
 
   if (hasErrors) {
-    console.log(
-      colorize(
-        `\n✗ Validation failed: ${validCount}/${totalCount} languages passed`,
-        "red",
-      ),
-    );
+    console.log(colorize(`\n✗ Validation failed: ${validCount}/${totalCount} languages passed`, "red"));
     process.exit(1);
   } else {
-    console.log(
-      colorize(
-        `\n✓ All ${totalCount} languages have complete translations!`,
-        "green",
-      ),
-    );
+    console.log(colorize(`\n✓ All ${totalCount} languages have complete translations!`, "green"));
     process.exit(0);
   }
 }
