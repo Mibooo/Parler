@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -r *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(mkfs *)",
+      "Bash(dd *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd*)",
+      "Bash(git checkout -- *)",
+      "Bash(git branch -D *)",
+      "Bash(truncate *)",
+      "Bash(dropdb *)",
+      "Bash(supabase db reset*)",
+      "Bash(supabase db push*)",
+      "Bash(supabase migration repair*)",
+      "Bash(supabase migration squash*)",
+      "Bash(supabase db remote commit*)",
+      "Bash(*prisma reset*)",
+      "Bash(*prisma migrate*)",
+      "Read(.env*)",
+      "Read(**/.env*)",
+      "Bash(cat *.env*)",
+      "Bash(cat .env*)",
+      "Bash(echo $*)"
+    ],
+    "defaultMode": "bypassPermissions"
+  }
+}
